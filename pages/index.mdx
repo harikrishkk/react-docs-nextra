@@ -1,11 +1,26 @@
-# Introduction
- 
-Welcome to Nextra! This is a basic docs template. You can use it as a starting point for your own project :)
+# React Intro
 
-## What is Nextra?
+React is a JS library to build user interfaces. When we navigate around web apps which is built with SPA< everything is smooth, instant and we dont see the loading spinner & wait for the new page which gives the feel of native mobile apps. React uses JS in the browser to update the page & UI without page reloading. JS runs behind the scenes and load / fetch / update the pieces dynamically without leaving the page. Using a vanilla Javascript makes it much more harder to write declarative code. We need a simpler mental model & workflow to make the apps scale
 
-A **simple**, **powerful** and **flexible** site generation framework with everything you love from Next.js.
+## The basic flow
 
-## Documentation
+Into the index.html, we have a placeholder element to which the whole react app is mounted dynamically.
+By default, we cannot mix & match HTML, JS and CSS in the same file. With react it works bceause of the setup using JSX, the transpiler which is babel and the mobile bundler with is webpack all working together. With react, we blend the HTML with variables managed by react to create dynamic components.
+With react, we do declarative programming. We model the state and let react take care of updating the UI to match the target state.
 
-The documentation is available at [https://nextra.site](https://nextra.site).
+A basic react component will look like this.
+
+```js
+export default function App() {
+  return (
+    <div>
+      <h1>Hello React</h1>
+    </div>
+  );
+}
+```
+
+Here, inside a regular function, we return some HTML pieces, also known as JSX.
+JSX is not HTML. There are subtle differences between them. Also, since components are nothing but regular functions, one question that can arise is, _when a function returns, the context within which the function is evaluated is wiped off from the execution context stack. In such a case, how will component retain state when some updates need to happen after the component has initially rendered?_
+
+That is where, we make use of some react specific functions or hooks which help us hold "state" that can hold the value across re-renders. When something changes, the whole component gets re-rendered from scratch, but it renders with the most updated available state for that component.
