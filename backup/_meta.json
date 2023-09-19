@@ -1,11 +1,7 @@
 {
   "index": "Introduction",
-  "basics": "Components Props & JSX",
-  "state": "State Events & Forms",
-  "think-in-react": "Think in React",
-  "custom-hooks": "Custom hooks",
-  "class-cmp": "Class components",
-  "react-router": "React Router",
+  "components": "React Basics",
+  "interactive": "Interaction in components",
   "about": {
     "title": "About",
     "type": "page"

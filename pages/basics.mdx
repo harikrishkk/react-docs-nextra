@@ -1,0 +1,139 @@
+# Working with components Props & JSX
+
+React & ReactDOM are 2 packages.
+- **React** - Core package that helps with defining and working with components, manage state, component interaction & communication
+- **ReactDOM** - renders react components in web browsers. It is a bridge between react & DOM. This package contains methods that help render react components into actual DOM. React itself is not tied to web platform and can be used with mobile, VR, etc and we can leverage react to be used in different context & environments.
+- As a rule, components should start with an UpperCase name. (lowercase ones are reserved for native HTML elements)
+- The import of ReactDOM changed from v17 to v18. (`react-dom/client`)
+- Strict mode is a react component that can be wrapped over the App component which enforces rendering the component twice to check for errors & bugs and throws some errors during the development time. Unsafe methods, practices, detecting unexpected side effects during render phase, warns about deprecated features etc.
+
+### Component
+
+- building block of any user interface 
+- Component is a piece of UI with its own data, logic, & apperarence.
+- We compose / combine smaller components to make bigger ones.
+- Can be reused, nested and can pass data between each other with props.
+- Parent & child components is a term that we usually use based on hierarchy and where each component is.
+- [HTML to JSX](https://transform.tools/html-to-jsx)
+- [BabelJS](https://babeljs.io/)
+- Combines data, logic & apperarence.
+- Seperation of concerns suggested to keep HTML, CSS, JS in seperate files traditionally. 
+- With SPA, JS is in charge and it decides what to show. Since the logic & UI is tightly coupled, keep them together is the JSX reasoning.
+- One technology per file (traditionally) vs one component per file (react).
+- To import a css file, `import './styles.css'`. But this style is not scoped.
+- Conditional rendering can be done with ternary & double ampersand operator.
+- Looping collections can be done with `map` operator with a "key" for each instance to identify them uniquely.
+- React fragment can wrap adjacent elements without adding extra HTML elements which can break layouts.
+- We can have multiple conditional return within a component.
+- When a component grows, divide them into smaller ones each with a single responsibility.
+- We can use cryptp.randomUUID() to create random IDs out of the box in browser.
+- To avoid null issues, use the Elvis operator
+
+We write new components using functions 
+
+```js
+
+// name needs to start with caps, need to return one root element from the return
+// Style needs to be an object
+
+const App = () => {
+  const name = "React";
+  const age = 17;
+  const isAdult = age > 18;
+  return (
+    <>
+     <p> The name is {name}</p>
+     <p style={{ fontWeight: 'bold'}}> He is a {isAdult ? 'adult': 'minor'}</p>
+     { isAdult && <p> He is an adult</p>}
+    </p>
+  )
+}
+export default App
+```
+
+### JSX 
+
+- is HTMLish. 
+- has its own rules 
+- Can only return one root element from the component. Use Fragment for having wrappers.
+- cannot use reserved keywords like class, for etc. 
+- Needs self closing elements. 
+- Declarative and not imperative.
+- Describe what UI looks like using JSX. Not how to achieve it.
+- React is an abstraction over DOM. We wont touch DOM directly. 
+- "UI/View is a function of state"
+- JSX combines HTML, CSS, JS into one single block of code.
+ 
+
+- When we use the angle brackets, we actually instantiate the component 
+
+```js
+<App /> 
+```
+
+### Props 
+
+- is a way to pass value from parent to child.
+- is immutable. To change prop, we need to pass an "event" to the parent, let the parent change the value and pass it down again
+- unidirectional data flow.
+- props flow down, events flow up.
+- State is internal to the component. So state can be changed from within which results in a re-render.
+
+```jsx 
+// Parent
+// We need to make sure to pass a prop, have a key for any collection item
+
+const List = () => {
+  const items = [1,2,3]
+  return (
+    { items.map(item => <ListItem key={item} item={item}>)}
+  )
+}
+export default List
+```
+
+```js 
+// Child
+// we can destructure the props directly if we wish to. => ({item})
+
+const ListItem = (props) => {
+  const item = props.item 
+  return (
+    <>
+     { item }
+    </>
+  )
+}
+export default ListItem
+```
+
+### One way data flow 
+
+- makes app more predictable.
+- easier to reason about
+- easier to debug 
+- more performant provided we stick to the recommended rules.
+
+### Children
+
+- Just like passing props, we can also pass children into the child element.
+- It make the components more reusable.
+
+
+```js 
+<ListItem>
+ <p> This is a content </p>
+</ListItem>
+```
+and can be grabbed using
+
+```js 
+const ListItem = (props) => {
+  
+  return (
+    <>
+     { props.children }
+    </>
+  )
+}
+```

@@ -1,0 +1,156 @@
+# Interactive components 
+
+State, Events & Forms 
+
+### State 
+
+- Is a component's memory
+- Is internal data to a component which will eventually be changed over time due to user interaction, a prop change, or a side effect. 
+- They get passed to child as props. 
+- To use it, we use hooks like `useState, useReducer, Context` etc to manage & share them. 
+- Thinking in terms of state is important. When to use them, where to place them decides the state structure.
+- When a component re-renders, the state is retained by react and is not cleared on re-render. Updating state triggers component re-render.
+
+```js
+// here, we create a slice of state called user. The updater function can be used to update this slice of state.
+const [user, setUser] = useState(null)
+
+const handleUpdate = (loggedInUser) => {
+  setUser(loggedInUser)
+}
+
+// if state depends on previous state, then the function syntax is better
+// that way, we are guarenteed that the next state update is made on top of the current state
+
+const [isVisible, setVisible] = useState(false);
+
+const handleToggle = () => {
+  setVisible(v =>  !v)
+}
+```
+
+The point to note here is that, state updates are asynchronous. We basically schedule state updates.
+Do not directly try to update state by directly assigning a new value, instead use the updater function istelf.
+
+`useState` can hold primitives as well as reference types.
+
+React got its name because it reacts to the state changes by re-rendering the UI.
+
+### Forms 
+
+- Uncontrolled form & controlled form 
+
+When the form / input element value is bound to the component state, it becomes a controlled form. Else its uncontrolled.
+Forms need to be wired with `preventDefault()` to stop them from reloading. Else it does the default POST request to server.
+The form needs `value` and `onChange` to be wired up with the state slice & updater function for making it a controlled component.
+
+
+### State management 
+
+Needs us to 
+
+- Think in react
+- state management
+- when and where to create state
+- derived state
+- State lifting & prop drilling
+
+### Thinking in react 
+
+We need to have the react mindset and understanding of the mental model. We need to know how to work with react APIS, think about components, its props, state, data flow, side effects etc.
+Break the UI into components & establish a component tree keeping reusability & interactivity.
+Decide on when to use state, its type, where to place them , establish the data flow. 
+
+### State management 
+
+- decide when to create pieces of state, what types of state is necessary, where to place them, how data flows through the app.
+- local state & global state 
+- Shared state via Context, Redux etc 
+
+### When & where to create a state?
+
+- If the data doesnt change, all we need is a regular variable.
+- Else, if it is possible to compute the data from an existing prop or state, we can do that as well with derived state
+- Is it okay to re-render the component when we add the new slice of state. If so, do `useState`, else do `useRef`
+- Place the state at a level where it is only needed. If siblings need them, then lift the state to its parent.
+
+
+### Derived state 
+
+- is computed from an existing piece of state or from props.
+
+### Splitting UI into component 
+
+- Logical separation of content / layout 
+- reusability
+- complexity
+- too many props, too many different things being done inside component , too many slices of state that is better split into smaller components
+
+### Categories 
+
+- stateless / dumb / presentational components ( no state, receives props & triggers events to parents , reusable)
+- stateful / smart components ( handles state, reusable )
+- structural components ( pages, layouts, screens - result of component composition )
+
+### Component composition 
+
+- When it comes to reusability, we want components to accepts children and compose the UI based on it. 
+- We do not hard code the component inside, but pass them down as children which comes in handy when creating things like Model, Containers etc
+- This embraces reusability.
+- Component's props are the public API
+- PropTypes (prop-types comes from react itself) / use typescript. 
+
+### React behind the scenes 
+
+- Components describe a piece of UI & is just a regular JS function which returns react elements usually written as JSX.
+- When we use it within angle brackets, react creates an instance of it. Props & state are internal to each instance. 
+- Each instance has its own lifecycle.
+- JSX is converted to React.createElement function calls ( which is also called React element)
+- A react element contains all necessary information to create DOM elements. This react element will be converted into actual DOM elements and rendered in real DOM
+- React elements are converted into DOM elements when they are painted to the screen
+- If we invoke the function, react no longer sees the function as a component instance, but it just returns the raw JSX that represents the component, which is not what we want, as it does not render anything to the screen. The JSX which we got is not a part of react render flow. It will also violate the rules of hooks.
+- In React, you cannot directly invoke a function to create an instance of a component. Instead, you use the function as a component itself to create instances when it's used in JSX (JavaScript XML) or within other components.
+
+### The render flow 
+
+- We build a bunch of components, we create different instances of them which in turn calls React.createElement() which produces a react element for each component instance which inturn is transformed to DOM elements & displayed in the UI 
+- State changes trigger renders. 
+- Then it enters the render phase.
+- React calls the component function & figures out how the DOM should be updated. But the DOM is not updated in this phase.
+- In react, render isnt about DOM updates or displaying elements on the screen. Rendering only happens internally inside react. It does not produce visual changes. 
+- During the commit phase, react actually writes to the DOM ( update, insert, delete elements )
+- Then browser repaints the screen which produces the visual changes 
+
+### How renders are triggered 
+
+- Only 2 possible ways 
+ - Initial render of the application
+ - State update in one or more components 
+
+And the render process is triggered for the whole application. This does not mean whole DOM is updated. 
+A render is not triggered immediately. It is scheduled for, when the JS engine has some free time. There is also batching of multiple setState calls in event handlers.
+A render is just about calling the component functions.
+React completely discards the old view on re-render.
+
+At the beginning of the render phase,  react goes through the component tree, take all those component instances that triggered a re-render, & render them , which calls the corresponding component functions which creates updated react elements and altogether creating the virtual DOM. 
+In the initial render, react takes the whole component tree and transform it into one big React element tree which is the Virtual DOM. 
+
+A VDOM is a tree of all react elements created from instances in the component tree. Its easy & cheap to create such virtual trees as it is just a javascript object.
+
+When there is a state update in any component, it triggers a re-render. React calls the component again & place the new react element in the new tree, in a new VDOM.  
+
+Rendering a component will cause all of its children to be rendered as well. 
+
+The new VDOM will get reconciled & diffed with the current fiber tree. The result will be an updated fiber tree 
+
+Updating actual DOM is not cheap & slow. During reconciliation, react decides which DOM elements actually needs updated. 
+
+Upon initial render, the react element tree is taken and a fiber tree is created ( it is an internal tree which has a fiber for each component instance & DOM element  )
+Fibers are not re-created on each render. So fibers is the perfect place for keeping track of current component state, props, side effects, hooks etc 
+Each fiber also contains a queue of work to do. ( update state & refs, running registered side effects, performing DOM updates etc )
+
+Fiber is a unit of work. If we take a look at the fiber tree, fibers are arranged in a different way than the elements in react element tree. It is not a normal parent child relationship. 
+Each first child has a link to its parent, & all other children will have a link to their previous sibling. This is a linked list, which makes it easy to process the work associated with each fiber. The tree includes react elements and regular HTML elements. 
+Work can be performed asynchronously. So the rendering process can be split into chunks & tasks can be priorotized. This also helps enable concurrent features like Suspense or transitions. Long renders wont block JS engine.
+
+Actual state & props of any component instance that we see on screen are stored internally within the corresponding fiber in the fiber tree. 

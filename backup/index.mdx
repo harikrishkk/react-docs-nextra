@@ -1,0 +1,52 @@
+# React Intro ❤️
+
+- we can do it online using codesandbox / stackblitz (`react.new`)
+- a component in react is just a function which returns JSX. The syntax looks like HTML, but it isn't fully HTML
+- [Simple starting example](https://codesandbox.io/s/upbeat-resonance-mdv7q3?file=/src/App.js)
+- VS Code extensions: Prettier, ES7 React redux, eslint, git, material icons theme, react dev tools.
+- State is the most fundamental concept in react. Whenever we need something to change in the UI, we change state.
+
+[Codesandbox example](https://codesandbox.io/s/reactmastery-1-srnc73?file=/src/App.js)
+
+- If we want, we can create dedicated components who cares & manages only specific things
+- [Course github repo jonas](https://github.com/jonasschmedtmann/ultimate-react-course)
+
+### React - Intro
+
+- A typical website always sent back a fresh HTML where the page was rendered in the server and sent across the finished HTML, CSS & JS.
+- The template & data was already mashed up in server. Browser was more like a projector & renders them.
+- On client side, Javascript was used just to manage small logics & animations.
+
+When web apps became popular, the number of lines of code, functionalities, complexity of the app, interactivity from the user, all increased.
+The web apps need data which still need to come from the backend using REST API endpoints to fetch the required data. With Single page applications, what we initially get is just a shell, within which the whole application is dynamically rendered. We create routes and render components within a placeholder ( outlet ) based on the URL & other criterias. With this, it feels like a native application. With Nextjs & remix, the server side rendering is coming back stronger. 
+
+For a SPA, the most important task is to keep the user interface & data in sync. That is, the UI always displays the current state of the data. This is a challenge indeed which takes more code and effort to do it using vanilla Javascript. Writing event handlers just to watch the user interaction and manually grabbing DOM using Javascript and updating the DOM is an expensive process. This results in a complex spagetti code of intermingled logic. This is an imperative way of programming which is hard to scale, test, and manage. With regular vanilla JS, the data/state is stored in DOM & shared across the application. This makes reasoning & bug fixing more challenging. Frameworks gives us a declarative & opinionated way of building applications which helps us focus on the business logic & modelling state and let framework take care of the heavy lifting of keeping the state & view in sync as well as rendering the application to actual DOM. They gives us a structure and rules to create the application. 
+
+Seperation of concerns ask us to put HTML, CSS, JS in respective files. But react encourages to keep them together as it encourages to think in terms of components which is a mix of template, style & its logic. With vanilla javascript, the task of updating logic and manually grabbing DOM to make that update using custom event handlers both lies with the developer, whereas , with frameworks, we only care of modelling the state. 
+
+React is a declarative, component based, state driven JS library for building user interfaces created by facebook. React is about building components which are the building blocks of user interfaces in react. Instead of thinking in terms of pages, we think in terms of components and compose together to build bigger components like lego blocks.
+
+We describe how the components look like, based on the state using JSX, which is a declarative syntax. React abstracts the actual DOM, so we never work with it directly. All we need is to update state, and react takes care of updating the actual DOM to match the state. 
+
+Nextjs and remix are frameworks built on top of react to adress the shortcomings of a library making it more opinionated, by giving more features out of the box, like SSR, routing etc, which otherwise needs 3rd party packages to be included & configured to get it working.
+
+If we go to babeljs playground and copy paste the component, we see how the component is getting converted into a react function behind scenes. 
+
+React is composed of 2 library 
+- react (core library that takes care of building components, interactions between them etc) 
+- react dom ( mounting the app into the actual DOM )
+
+### Setup a new project 
+
+- vite is for modern real world apps ( manually setup ESLint). Hot module reload + bundling is fast.
+- create react app for tutorials & experiment. (ESlint, prettier, jest, webpack )
+- `npx create-react-app app-name`
+- what we have is node modules to hold all package dependency, package.json that contains the list of dependency, public folder contains assets that can be served directly. 
+
+### React Javascript concept pre requisites
+
+- destructuring, spread & rest operators with object & arrays
+- template literals
+- ternary operator , double ampersand 
+- arrow function
+- es6 methods - map, filter, reduce,sort, immutability, promises, async await, 

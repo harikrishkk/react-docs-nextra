@@ -1,0 +1,115 @@
+# State events & Forms
+
+- State is data that a component can hold over time.
+- State is internal data owned by the component.
+- Memory of the component
+- State is a single local component variable
+- Updating state re-renders the component & its view.
+- Local state variables are persisted between re-renders.
+- With props, whenever the component recieves new prop from its parent, it re-renders.
+
+```js 
+const Header = ({ name }) => {
+  const handleClick = () => {}
+  const handleHover = (xCoord, yCoord) => {}
+  <>
+   <h1>{name}</h1>
+   <button onClick={handleClick}> click </button>
+    <button onClick={e => handleHover(e.pageX, e.pageY)}> hover </button>
+   </>
+}
+export default Header
+```
+
+### State 
+
+- do not directly assign state with new values.
+- only use `useState` hook for updating state 
+- state can be primitives or reference types.
+- If it is object, make sure to copy other slices too when updating one property of the object.
+- When state is updated, component is re-rendered.
+- Install react dev tools to have a visual medium for debugging. (props, state etc can be seen)
+- Each component instance manages its own state slice. 
+
+
+![State updating](/assets/state.png)
+
+```js
+
+import { useState } from 'react'
+
+const Header = () => {
+ const [name, setName] = useState('');
+
+ return (
+  <>
+   <p> {name} </p>
+   <button onChange={() => setName('Jim')}> Change </button>
+ )
+}
+```
+
+### State update syntax 
+
+Updating state is asynchronous. Don't think that just because we called setState, the state updated and component instantly rerendered. Basically, react schedules state updates.
+
+```js 
+// if we just need to set a value
+setState(10);
+
+// if next state value depends on the previous
+setState(currVal => currVal + 1)
+
+```
+
+### Forms 
+
+- Controlled & uncontrolled forms.
+- Controlled elements are those whose values are tied with component state.
+- Uncontrolled elements are those whose values aren't tied with state.
+- event in react is Synthetic Events. They are cross browser wrapper around native browser events. So, consistency and compatibility across browsers is guarenteed.
+
+```js 
+// Example of a controlled form
+const Form = () => {
+
+  const [userName, setUserName] = useState();
+  const handleChange = (e) => {
+    setUserName(e.target.value)
+  }
+  const handleSubmit = e => {
+    e.preventDefault();
+  }
+
+  return (
+    <form onSubmit={handleSubmit}> 
+     <input value={userName} onChange={handleChange}/>
+     <button> Submit </button>
+    </form>
+  )
+}
+```
+## Thinking in state & its management 
+
+- we need to think in react way. The mental model needs to be right. 
+- Break the UI into smaller reusable composable components.
+- State management is key for building performant apps. Think about global & local state.
+- We should know when & where to create the state & at what level.
+- Establish a data flow. ( One way data flow, child to parent communication, access global state)
+- If possible, have derived state from available state slices
+- Lift state up when state needs to be shared across siblings.
+- Decide when to create pieces of state, what type of state is necessary, where to place the state, how data flows through the app.
+- Local state is needed for only that particular component. That can be passed down to its children as props.
+- Global state can be handled with Context API / redux.
+
+### State - Rule of thumb
+
+- If the state never changes, we can assign it to a const.
+- If it changes, then ask, whether we can derive the value from an existing state.
+- Should state change re-render a component? If yes, `useState` is a good option, else `useRef`
+- Lift state up by one level if we need to share state with siblings.
+- Whenever possible, try to derive state from existing states & not add more slices of state unnecessary.
+- Do early return from the components whenever possible.
+- An input, whenever we put a `value`, we also need to put `onChange`. Else console errors.
+- Prop drilling will be a problem beyond a point.
+

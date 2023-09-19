@@ -1,0 +1,63 @@
+# Class components (Legacy)
+
+With functional components, all we care about is state synchronoization.
+With class components, we need to make use of life cycle hooks.
+For error boundaries, we still need class components.
+
+```js 
+import React, { Component } from 'react'
+
+class Counter extends Component  {
+  // class fields
+  state = {
+
+  }
+
+ // this.props gives access to a component's props.
+  constructor(props) {
+    super(props);
+    // state is always an object
+    this.state = {
+     count: 0 
+    }
+    this.handleIncrement = this.handleIncrement.bind(this);
+  }
+
+  fetchWeather = () => {
+    // no issues of this keyword
+  }
+
+  componentDidMount() {
+   // place to do side effects. Calls only once initially on mount.
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+   // not called initially. Only when component updates.
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  handleIncrement() {
+    this.setState(currState => {
+      return {
+        ...currentState,
+        count: currentState.count + 1
+      }
+    })
+  }
+  
+
+  render() {
+    return (
+      // JSX 
+      <>
+       <h1>  {this.state.count} </h1>
+       <button onClick={this.handleIncrement}> Increment </button>
+      </h1>
+    )
+  }
+}
+
+```

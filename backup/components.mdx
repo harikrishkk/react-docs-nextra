@@ -1,0 +1,81 @@
+# Components
+
+Is the most fundamental concept as application is made out of components. For each component, react renders a view which is what returned by JSX from that component. 
+Each component has its own data, logic & apperarence. We combine smaller componens to build bigger ones. They can be reused, nested & data can be passed between them.
+We can visualize the application as a component tree which can be in a parent-child hierarchy & relationship.
+
+### The booting up flow.
+
+In `index.js`, we have the Application being rendered to real DOM using ReactDOM.
+In `public` folder, we have the `index.html`, within which we have a root element into which the application will be rendered by the workflow.
+When we do `root.render(<App />)`, what we do is instantiate the App component by using the angle brackets and asking the reactDOM to render it into the placeholder slot.
+In V18+, what we see is `createRoot` and in older code bases, what we see is `ReactDOM.render(<App />)`
+
+### Strict Mode 
+
+If we wrap the component with a `React.StrictMode`, it will render the component twice during development mode, help us know about bugs & it checks if we are using outdated APIs and warns us about it.
+
+### Fragment 
+
+In react, we always need to return one root JSX element from the component. If we have adjacent siblings, react throws an error. To deal with them without adding extra elements like div which may affect the layout if we are using flexbox or grids, we can use Fragments.
+`React.Fragment` or empty angle brackets to wrap adjacent siblings.
+
+### What is JSX 
+
+A component describes what it looks like by returning JSX. Its a declarative syntax to descrive what components look like & how they work based on the data.
+Components must return a block of JSX. It allows us to embed JS, CSS & react components into HTML. Each JSX element is converted to a `React.createElement` function call. We could use React without JSX. 
+JSX isnt HTML. We have reserved Javascript keyword like class, for, etc for which we have JSX equivalents like className, htmlFor.
+JSX always need one root element to be returned from a component & it needs self closing tags. We can enter the Javascript mode by using curly braces within which we can use JS expression. Statements like if, else, switch etc are not allowed though within the curly braces.
+JSX also need camelCasing for event handlers & CSS property names.
+
+
+### JSX conversion
+
+[Babel js playground](https://babeljs.io/repl)
+
+Copy paste the JSX here and see the JS equivalent which is understood by the browsers. 
+
+### Images 
+
+we can directly refer the path inside `public` folder.
+If we have `public/images/img.jpg`, then we can directly use `<img src="images/img.jpg" />`
+
+
+### Declarative vs imperative 
+
+With imperative, we provide step by step instructions on manually traversing DOM and manipulating them. ( jQuery )
+With declarative programming, we describe what UI should look like based on state. The framework takes care of rendering them to the actual DOM. 
+The "how" is figured out by the framework itself. React is an abstraction over the DOM. We never touch DOM directly. View is a function of state. 
+
+
+### Props 
+
+We pass data from parent to child using "props" which are immutable.  We never directly mutate the props. They are read-only.
+There is also a `children` way where we can pass data into the component.  To configure & customize a component, we use prop. With props, the control is still with the parent. If we need to change them, we need to trigger an event upwards to the parent where we hold the state, and parent can decide if the state needs to be changed in response to that event. Once it is changed, we get a different prop value with which the child re-renders.
+Mutating props will make components impure as there is great importance to keeping the components pure, which makes it predictable & avoids bugs.
+React is about unidirectional data flow. Data flows down, & events flow up. They will be destructured within the child components if needed.
+
+### Separation of concerns 
+
+With SPAs, Javacript was in charge of HTML. The logic was tightly coupled. With traditional HTML, even though we places them in different files, we were still having tight coupling when we used them as if we forget to import the JS within HTML, it would not load the logic and if we miss out the actual element in the HTML, the JS logic which targeted it wont work as well. 
+So if the HTML and logic are so tightly coupled, why keep them separated. With a react component, we have JSX inside of which we use the logic & styles together. We have one component per file & not one technology per file. 
+
+### Styling 
+
+- If we import the styles into the component, (`import "./styles.css"`) we can use the classes exposed by it. ( external styles ). This is global styles though. 
+- we can also have inline styles using an object syntax
+- we can have scoped styles by using modules.
+
+### Render a list
+
+We use map with each instance needing a unique key to identify itelf for react to optimize them. 
+ForEach wont work. We need to use map itself.
+
+### Conditional rendering 
+
+- `&&` is one way, Ternary is another way. We can have multiple return pieces. Within the curly braces, JS expect to produce a value.
+
+### Refactoring JSX 
+
+We start with a component, and at some point, if we can move the JSX code into a separate component, we will move them and use the new component inside the current one.
+

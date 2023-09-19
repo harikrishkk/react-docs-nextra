@@ -1,0 +1,139 @@
+# React router
+
+### Vite installation 
+
+[Vite Home page](https://vitejs.dev/guide/)
+
+```js
+// Vite install 
+npm create vite@latest
+npm i eslint vite-plugin-eslint eslint-config-react-app --save-dev
+npm i react-router-dom@6
+
+// .eslintrc.json 
+
+{
+  "extends": "react-app"
+}
+
+// vite.config.js 
+
+import eslint from "vite-plugin-eslint";
+
+plugins: [rect(), eslint()]
+
+With vite, we need jsx files.
+```
+
+- with router, we do client side routing.
+- achieved through react-router which is a 3rd party library
+- SPA are web apps that is executed entirely on the client.
+- Different URLs correspond to different views.
+- Javascript is used to update DOM
+- page never reloads.
+- feels like native app.
+- extra data can be loaded from a web api 
+
+### Create pages 
+
+```
+/pages 
+  Product.jsx 
+  Home.jsx 
+  Pricing.jsx
+  PageNotFound.jsx
+```
+in App component 
+
+```js
+import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom'
+
+const App = () => {
+ return (
+  <BrowserRouter>
+  <Navbar/>
+    <Routes>
+      <Route path="/" element={<Home />}/> 
+      <Route path="product" element={<Product />}/>
+      <Route path="pricing" element={<Pricing />}/>
+      <Route path="cities/:id" element={<City />}/>
+      <Route path="*" element={<PageNotFound />}/>
+    </Routes>
+  </BrowserRouter>
+ )
+}
+
+const Home = () => {
+  return (
+    <>
+     <Link to="/pricing">Pricing</Link>
+    </>
+  )
+}
+
+const Navbar = () => {
+  return (
+    <>
+     <NavLink to="/">Home</NavLink>
+     <NavLink to="/product">Products</NavLink>
+     <NavLink to="/pricing">Pricing</NavLink>
+    </>
+  )
+}
+
+```
+`active` class is added automatically to current route. Style them to show different styles.
+
+React is unopinionated about styling 
+
+- Inline css is applied only to the respective JSX 
+- CSS/SCSS - scope is entire app. 
+- Scoped styles - with CSS modules, the scope is that component 
+- CSS in JS - styled components have component scope too.
+- Utility first CSS - tailwind.
+
+To use css modules, all we need to do is to end the file name with `*.module.css` 
+
+```css 
+.list {}
+.nav {}
+```
+and within the component 
+
+```js 
+import styles from './styles.module.css'
+
+<nav className={styles.list}>
+```
+If we inspect, we see unique strings added to the class.
+
+- State can be stored in URL. This is one easy way to store state in global place accessible to all components in the app.
+- It is a good way to pass data & bookmark them 
+- Params & query string can be used in URLS
+
+```js 
+import { useParams } from 'react-router-dom'
+
+const City = ({ city }) => {
+  const { position } = city;
+  const { id } = useParams();
+  return (
+    <>
+     <Link to={`${id}?lat=${position.lat}&lng=${position.lng}`}>
+    </Link>
+  )
+}
+```
+
+and to get params from URL, 
+
+```js 
+import { useSearchParams } from 'react-router-dom';
+
+function Map() {
+  const [searchParams, setsearchParams] = useSearchParams();
+  const lat = searchParams.get('lat');
+  const lng = searchParams.get('lng')
+}
+
+```

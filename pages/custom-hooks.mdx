@@ -1,0 +1,74 @@
+# Custom hooks 
+
+Hooks are built in functions in react that can hook into react internals. They are APIs that expose some react functionality like
+- create & access state from fiber tree
+- register side effects in fiber tree
+- manually select DOM 
+- always start with "use" 
+- Can create custom hooks for reuse non visual logic.
+- 20 built in hooks 
+
+
+| Most used      | Less used | Library authors     |
+| :---        |    :---   |          :--- |
+| useState,useEffect, useReducer, useContext | useRef, useCallback, useMemo,useTransition, useDeferredValue      | useSyncExternalStore, useInsertionEffect       |
+
+### Rarely used 
+
+- useLayoutEffect 
+- useDebugValue
+- useImperativeHandle
+- useId
+
+### Rules 
+
+- should only call at the top level 
+- not within conditional statements 
+- they should always be called at the exact order 
+- can only be called from function components / custom hooks 
+- auto enforced with ESLint 
+- when react builds a fiber tree, which also contains a linked list of hooks used, and unless the hooks are called in same order, the linked list will break. Fibers are not destroyed / recreated on every render. 
+
+### For react to consider a value on initial render only, use the function syntax 
+
+```js
+// Correct one ✅ - lazy evaluation. Function must be pure without arguments.
+const [val, setVal] = useState(() => {
+  const localStorageVal = localStorage.getItem("watched");
+  return JSON.parse(localStorageVal);
+})
+
+// Do not do this ❌
+useState(localStorage.getItem('something'))
+```
+
+### Refs 
+
+For selecting DOM element, use refs. Direct access with jQuery or javascript apis isnt the react way.
+Ref is like a box and we can put any value that needs to be persisted across renders. Assigning values to ref will not trigger re-render.
+Ref are for data that is not rendered. They may appear in event handlers & effects, not in JSX 
+
+```js
+import { useRef } from 'react'
+
+const elRef = useRef(null);
+elRef.current = 1000; // direct assignments are possible.
+elRef.current.focus() // call methods 
+
+<input ref={elRef}/>
+```
+Custom hooks allow us to reuse non visual logic in multiple components.
+
+```js 
+// useMovies.js 
+
+export function useMovies() {
+  return {
+    movies,
+    onSelect
+  }
+}
+
+// within component 
+const {movies, onSelect} = useMovies()
+```

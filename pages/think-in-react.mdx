@@ -1,0 +1,292 @@
+# Think in react way
+
+### Splitting UI into components
+
+- It is an art
+- We dont need a component with 15+ properties. Maintaining & reusing them would be hard.
+- Too much abstraction isn't good. It will be hard to trace back the flow.
+- Too many responsibilities are not good either.
+
+A good rule of thumb is:
+
+- Logical separation of content / layout
+- Reusable
+- Low complexity
+- Coding styles 
+
+Start with a bigger one, and split them as it is needed based on above points.
+
+### Component categories 
+
+- Stateless / presentational - receives props, emits events.
+- Stateful - holds state
+- Structural - pages/layouts/screens
+
+Be aware that prop drilling brings component coupling which may affect refactoring.
+Lifting state is also on a need basis
+
+### Component composition
+
+We do not use a component inside the wrapper, but pass it as a children, thereby making the wrapper reusable.
+The wrapper becomes flexible enough to accept any content it wants.
+
+### Prop Types 
+
+- adds type checking. 
+- Need to add the package with npm. 
+
+```js
+import PropTypes from 'prop-types'
+
+StarRating.propTypes = {
+  maxRating: PropTypes.number.isRequired,
+  defaultRating: PropTypes.number,
+  color: PropTypes.string,
+  onRating: PropTypes.func
+}
+```
+
+## How react works behind scenes 
+
+```
+content[0] can be written as content.at[0]
+```
+
+- A component is just a function that returns JSX. 
+- It is just a piece of UI. 
+- A component instance is the "physical manifestation" of a component in the component tree. 
+- That is, every time we use the angle brackets to instantiate the component. This is important for react to identify it as a component instance. 
+- JSX is converted into `React.createElement()` function calls. The result of these calls is a "react element"
+- It is just a JS object that react keeps in memory. This contains the necessary info to create DOM elements.
+- The react elements is converted into actual DOM elements (HTML) & painted to the screen.
+
+![Component flow](/assets/component-flow.png)
+
+### Phases 
+
+![Phases](/assets/phases.png)
+
+- It is the commit phase that produces the visual changes in the screens.
+- A render is scheduled. If there is multiple `setState` calls, then they will be batched, but the order of state updates is guarenteed.
+
+React goes through all the component instances that triggered re-render & render them.
+
+### State trigger diagram
+
+- whenever a state changes, the component's function is called, JSX is evaluated, and creates React elements
+- What react creates is a react element tree (a.k.a Virtual DOM)
+- whenever a component state changes, a new virtual dom is created. 
+- Important point is, a render causes all the child elements to re-render irrespective of a prop change or not.
+- A diff of old VDOM & current VDOM (fiber tree reconciliation) is done
+- What we get is the updated fiber tree 
+- That change is pushed into actual DOM 
+- Writing into real DOM is expensive. 
+
+![VDOM](/assets/vdom-cycle.png)
+
+- During initial render of the app, VDOM is taken and a fiber tree is created behind scenes.
+- Fiber tree is a special internal tree that has a fiber (node) for each component instance & DOM element.
+- Fiber tree is not re-created on every render.
+- It is just mutated over & over later on each recon.
+- This makes fiber the ideal place to keep state, props, side effects, hooks, A queue of work etc 
+- A queue of work includes updating state,refs, DOM updates, run side effects etc
+- Fiber is defined as a unit of work.
+- Tree is a complete representation of the entire DOM structure including regular HTML elements.
+- Rendering process can be split into chunks, tasks can be prioritized, work can be paused, reused or thrown away. Work being done asynchronously can help concurrent features like Suspense or transitions starting React 18.
+- During Diffing, fiber compares the position of the elements in the tree. 
+- Some nodes which was changed will be marked for updation
+- Some nodes which removed will be marked for deletion
+- Nodes unchanged are untouched.
+
+### Render phase 
+
+![VDOM](/assets/diff.png)
+
+- Here, the component tree initially renders with `show: true` because of which the Modal is shown
+- React creates a Virtual DOM of the tree behind scenes
+- Then component re-renders with `show: false` because of which the Modal is taken out of DOM 
+- App rerenders
+- All the children of App also re-renders 
+- React creates a new Virtual DOM of the same.
+- Fiber tree diffing is done between these 2.
+- Figures out what node has updated, what needs to be deleted, what remains untouched during the render phase.
+- Result of diffing is a list of effects (list of DOM updates)
+- During commit phase, these diffs are actually pushed to the real DOM 
+
+### Commit phase (React DOM)
+
+- during this phase, react writes to the DOM.
+- Commit phase is synchronous. It cannot be interrupted.
+- After this phase, browser paints the screen.
+
+### Diffing 
+
+- During diffing, in the hierarchy, at the same position, different element comes, then its destroyed & recreated including their state.
+- Here, react assumes, entire tree is invalid. 
+- Between re-renders, if there is same elements at the same position, element & its children are kept as is, including their state.
+- When props change, they are simply passed along.
+- To create a brand new instance, use a key prop.
+- Using a key when iterating over the collection is important because, for each instance, state is different. Props may change, but state isnt.
+- Because of that, component will not be re-rendered.
+- keys allows react to distinguish between multiple instances.
+- Keys help to reset state.
+
+### 2 types of logic in react components 
+
+- Render logic is the code that lives at the top level of the component function.
+- They participate in describing how the component view looks like. ( state slices, JSX returns)
+- They are executed every time a component re-renders.
+- Event handler functions are those which is executed as a consequence of the event that the handler is listening for.
+
+- Side effect is any dependency of data outside function scope, ie interaction with outside world.
+- eg: http call, writing to DOM etc 
+- Pure functions are functions without side effects. Given the same input, function always returns same output.
+
+When it comes to render logic, components need to be pure. Render logic should not produce side effects.
+- No API calls, timers, direct DOM APIs, mutating objects / variables outside function scope.
+- Do not update state/ref in render logic. It results in infinite loop.
+- Side effects are allowed in event handler functions / hook called useEffect
+
+### State updates are batched 
+
+- When there are multiple state updates inside a function. They are batched into one render & commit per event handler.
+- If react starts updating instantly, then there will be too many re-renders. 
+- One setState doesnt equal one re-render. 
+- State updates are asynchronous.
+- Updated state are only available after re-render. Not immediate.
+- If we need to update state based on previous state within an event handler, use the function syntax.
+- For timeouts & promise, native events,  with React 17,  state updates will not be batched. Instead they are updated one by one. 
+- With react 18, they are batched.
+- To opt out of auto batching, wrap the state update in a `ReactDOM.flushSync()` function.
+
+- Event like click, one done, it bubbles up the DOM tree. 
+- We have capturing phase & bubbling phase. During this, the event goes through each and every element in the tree.
+- Use `stopPropogation` to prevent this.
+- Synthetic events - react gives this, which is a wrapper over native events. It fixes browser inconsistencies. Most events except scroll will bubble. (focus, blur, change)
+
+### Framework vs Library 
+
+- Angular, Vue, Svelte etc are complete frameworks.
+- React is a library
+- HTTP, Routing, Styling, Form management, state management, testing, all have different packages
+- Decision fatigue.
+
+### Pieces
+
+- Routing ( React router, react location, reach router)
+- HTTP ( fetch, axios)
+- State management ( Context API, Redux, Zustand)
+- Remote state management (React query, SWR, Apollo)
+- Styling (CSS Module, Tailwind, Styled components)
+- Form management (React hook form, formik)
+- Animations ( Motion, spring)
+- UI libs (Material UI, Chakra, Mantine)
+
+### Effects and data fetching 
+
+- To fetch data within a component, we need an effect called `useEffect`
+
+### Component Lifecycle 
+
+- Mount / initial render - component renders, and then creates fresh state/props.
+- Re render when state updates / props changes, context changes / parent re-renders
+- Unmount - component instance is destroyed 
+- `useEffect` can register a side effect. 
+- Any interaction between the component & outside world is a side effect.
+
+
+```js 
+import { useEffect } from 'react'
+
+useEffect(() => {
+  // will run everytime component re-renders
+})
+
+useEffect(() => {
+  // will run only once on initial mount
+}, [])
+
+useEffect(() => {
+  // will run initially, as well as when dependency changes
+}, [dependencies])
+
+useEffect(() => {
+  return () => {
+    // clean up. Called before next re-render or during unmount.
+  }
+}, [dependencies])
+```
+
+### To fetch API calls on render 
+
+```js 
+useEffect(() => {
+   fetch('https://someapi.com/v1').then(
+    res => res.json()
+   ).then(data => {
+    // set the component state 
+   }).catch(err => console.log(err))
+}, [])
+```
+
+If we use async / await, we need to use try/catch 
+
+There is something called "useLayoutEffect" apart from regular "useEffect"
+The difference is, it runs before the browser actually repaints the screen. But we most likely wont use it on everyday tasks.
+
+Cancelling request or subscription, stopping timers, removing event listeners etc can be done inside clean up functions.
+AbortController is used for cancelling HTTP requests with fetch. 
+
+Each effect should only do one thing. 
+
+### useReducer hooks 
+
+- `useState` can handle single slices of state and those are confined to a component.
+- a more complex way of state handling is `useReducer`
+- we can refactor the reducer into separate file if we want. 
+- when multiple state updates need to happen at same time, useReducer helps.
+- decouples state logic from the component. This helps testing.
+- reducer should be pure. It should not have any side effects.
+
+```js
+import { useReducer } from 'react'
+
+const initialState = {
+  count: 0
+};
+
+function reducer(state, action) {
+  switch(action.type) {
+    case "INCREMENT": 
+      return state.count + 1;
+
+    case "INCREMENT_BY_COUNT": 
+      return state.count + action.payload;
+
+    case "DECREMENT":
+      return state,count - 1;
+
+    case "RESET":
+      return { count: 0 };
+
+    default:
+     return state;
+  }
+}
+
+const [state, dispatch] = useReducer(reducer, initialState)
+
+
+dispatch({ type: 'INCREMENT' })
+dispatch({ type: 'INCREMENT_BY_COUNT', payload: 10 })
+```
+
+### JSON server 
+
+```
+npm i json-server
+
+At root, add data/questions.json 
+
+In package.json, inside scripts, "server": "json-server --watch data/questions.json --port 8000"
+```

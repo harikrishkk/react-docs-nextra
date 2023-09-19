@@ -1,26 +1,85 @@
-# React Intro
+# React Intro ❤️
 
-React is a JS library to build user interfaces. When we navigate around web apps which is built with SPA< everything is smooth, instant and we dont see the loading spinner & wait for the new page which gives the feel of native mobile apps. React uses JS in the browser to update the page & UI without page reloading. JS runs behind the scenes and load / fetch / update the pieces dynamically without leaving the page. Using a vanilla Javascript makes it much more harder to write declarative code. We need a simpler mental model & workflow to make the apps scale
+- we can do it online using codesandbox / stackblitz (`react.new`)
+- a component in react is just a function which returns JSX. The syntax looks like HTML, but it isn't fully HTML
+- VS Code extensions: Prettier, ES7 React redux, eslint, git, material icons theme, react dev tools.
+- State is the most fundamental concept in react. Whenever we need something to change in the UI, we change state.
 
-## The basic flow
+- [Simple starting example](https://codesandbox.io/s/upbeat-resonance-mdv7q3?file=/src/App.js)
 
-Into the index.html, we have a placeholder element to which the whole react app is mounted dynamically.
-By default, we cannot mix & match HTML, JS and CSS in the same file. With react it works bceause of the setup using JSX, the transpiler which is babel and the mobile bundler with is webpack all working together. With react, we blend the HTML with variables managed by react to create dynamic components.
-With react, we do declarative programming. We model the state and let react take care of updating the UI to match the target state.
-
-A basic react component will look like this.
-
-```js
-export default function App() {
-  return (
-    <div>
-      <h1>Hello React</h1>
-    </div>
-  );
-}
+```
+In this example, we learn about 
+- what a component syntax is, 
+- intro about JSX and wiring up a react app
 ```
 
-Here, inside a regular function, we return some HTML pieces, also known as JSX.
-JSX is not HTML. There are subtle differences between them. Also, since components are nothing but regular functions, one question that can arise is, _when a function returns, the context within which the function is evaluated is wiped off from the execution context stack. In such a case, how will component retain state when some updates need to happen after the component has initially rendered?_
+Here is a small application that fetches data and shows in the screen. 
+[Codesandbox example](https://codesandbox.io/s/reactmastery-1-srnc73?file=/src/App.js)
 
-That is where, we make use of some react specific functions or hooks which help us hold "state" that can hold the value across re-renders. When something changes, the whole component gets re-rendered from scratch, but it renders with the most updated available state for that component.
+```
+In this example, we learn about 
+- state 
+- asynchronous data fetching
+- conditional rendering of JSX
+- event handling & looping collection.
+- need for keys in a collection
+```
+- State is the most fundamental concept in react. Whenever we need to to change something in the app, use state.
+- `useState` is a react hook which should always be used at the top level of the component. 
+- `const [userName, setUserName] = useState('')` The first item in the array is 
+- If we want, we can create dedicated components who cares & manages only specific things
+- [Course github repo jonas](https://github.com/jonasschmedtmann/ultimate-react-course)
+
+### A website flow before SPAs 
+
+- A typical website always sent back a fresh HTML where the page was rendered in the server and sent across the finished HTML, CSS & JS.
+- The template & data was already mashed up in server. Browser was more like a projector & renders them.
+- On client side, Javascript was used just to manage small logics & animations.
+
+As the number of lines of code, functionalities, complexity, interactivity all increased, Single page applications came into existance. 
+The work of rendering a web page is shifted from server to client & we call them web apps instead of web pages. Data for such web apps need to come from server/backend in the form of an API. App consumes the API and renders a screen for each view of the app.
+
+### With SPA
+
+With Single page applications, what we initially get is just a shell, within which the whole application is dynamically rendered. We create routes and render components within a placeholder ( outlet ) based on the URL & other criterias. With this, it feels like a native application. With Nextjs & remix, the server side rendering is coming back stronger. 
+
+For a SPA, the most important task is to keep the user interface & data in sync. That is, the UI always displays the current state of the data. This is a challenge indeed which takes more code and effort to do it using vanilla Javascript. Writing event handlers just to watch the user interaction and manually grabbing DOM using Javascript and updating the DOM is an expensive process. This results in a complex spagetti code of intermingled logic. This is an imperative way of programming which is hard to scale, test, and manage. 
+
+With regular vanilla JS, the data/state is stored in DOM & shared across the application. This makes reasoning & bug fixing more challenging. Frameworks gives us a declarative & opinionated way of building applications which helps us focus on the business logic & modelling state and let framework take care of the heavy lifting of keeping the state & view in sync as well as rendering the application to actual DOM. They gives us a structure and rules to create the application. 
+
+Seperation of concerns ask us to put HTML, CSS, JS in respective files. But react encourages to keep them together as it encourages to think in terms of components which is a mix of template, style & its logic. With vanilla javascript, the task of updating logic and manually grabbing DOM to make that update using custom event handlers both lies with the developer, whereas , with frameworks, we only care of modelling the state. 
+
+### React 
+
+React is a declarative, component based, state driven JS library for building user interfaces created by facebook. React is about building components which are the building blocks of user interfaces in react. Instead of thinking in terms of pages, we think in terms of components and compose together to build bigger components like lego blocks.
+
+We describe how the components look like, based on the state using JSX, which is a declarative syntax. React abstracts the actual DOM, so we never work with it directly. All we need is to update state upon a user interaction, and react takes care of updating the actual DOM to match the state, keeping the UI and state in sync. React "reacts" to state changes by re-rendering the UI. React is a library, and not a framework as it is just the view layer. We need to add more libraries for data fetch, routing etc. 
+
+Nextjs and remix are frameworks built on top of react to adress the shortcomings of a library making it more opinionated, by giving more features out of the box, like SSR, routing etc, which otherwise needs 3rd party packages to be included & configured to get it working.
+
+If we go to babeljs playground and copy paste the component, we see how the component is getting converted into a react function behind scenes. 
+
+React is good at:
+- rendering components on a webpage based on the current state.
+- good at keeping UI in sync with state by re-rendering when state changes.
+
+### Dev setup
+
+- VS Code, Git, Chrome, 
+- Extensions: ES7 react redux, Prettier, ESLint.
+- Node V18. 
+
+### Setup a new project 
+
+- vite is for modern real world apps ( manually setup ESLint , Prettier, Testing ). Hot module reload + bundling is fast.
+- create react app for tutorials & experiment. (ESlint, prettier, jest, webpack )
+- `npx create-react-app@5 app-name`
+- what we have is node modules to hold all package dependency, package.json that contains the list of dependency, public folder contains assets that can be served directly. 
+
+### React Javascript concept pre requisites
+
+- destructuring, spread & rest operators with object & arrays
+- template literals
+- ternary operator , double ampersand 
+- arrow function
+- es6 methods - map, filter, reduce,sort, immutability, promises, async await, 
