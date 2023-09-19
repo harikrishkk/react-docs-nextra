@@ -53,10 +53,15 @@ const App = () => {
   <BrowserRouter>
   <Navbar/>
     <Routes>
-      <Route path="/" element={<Home />}/> 
+      <Route index element={<Home />}/> 
       <Route path="product" element={<Product />}/>
       <Route path="pricing" element={<Pricing />}/>
-      <Route path="cities/:id" element={<City />}/>
+      <Route path="app" element={<AppLayout />}> 
+        <Route index element={<Navigate replace to="cities"/>}/>
+        <Route path="cities" element={<CityList />}/>
+        <Route path="cities/:id" element={<City />}/>
+        <Route path="countries" element={ <p> Countries </p>}/>
+      </Route>
       <Route path="*" element={<PageNotFound />}/>
     </Routes>
   </BrowserRouter>
@@ -131,9 +136,29 @@ and to get params from URL,
 import { useSearchParams } from 'react-router-dom';
 
 function Map() {
-  const [searchParams, setsearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng')
 }
 
+```
+
+### Programmatic navigation 
+
+```js 
+import { useNavigate } from 'react-router-dom'
+
+function Map() {
+  const navigate = useNavigate();
+  navigate("cities")
+}
+```
+To navigate back, `navigate(-1)`
+
+### Nested Route 
+
+```js 
+import { Outlet } from 'react-router-dom'
+
+<Outlet />
 ```
